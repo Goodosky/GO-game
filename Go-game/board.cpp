@@ -49,9 +49,6 @@ void displayBoard(struct go_data go) {
 			textcolor(go.board[x][y] == P1 ? BLACK : WHITE);
 			putch(STONE);
 		}
-
-		// Return to cursor color
-		textcolor(CURSOR_COLOR);
 	}
 }
 
@@ -82,13 +79,12 @@ void drawBorder(int board_size) {
 		gotoxy(BOARD_OFFSET_X + board_size, BOARD_OFFSET_Y + i);
 		putch(BORDER_RIGHT);
 	}
-
-	textcolor(CURSOR_COLOR);
 }
 
 
 
 void displayCursor(struct go_data go) {
+	textcolor(go.curr_player == P1 ? BLACK : WHITE);
 	gotoxy(go.cursor_x(), go.cursor_y());
 	putch('*');
 }
@@ -115,7 +111,7 @@ void moveCursor(struct go_data* go) {
 }
 
 void centerCursor(struct go_data* go) {
-	go->board_x = go->board_y = BOARD_SIZE / 2;
+	go->board_x = go->board_y = go->board_size / 2;
 	gotoxy(go->cursor_x(), go->cursor_y());
 }
 
@@ -132,15 +128,49 @@ void putStone(struct go_data* go) {
 };
 
 
+int coutLiberties(struct go_data go) {
+	int liberties = 0;
+
+	hasLiberty(go, 0, -1) && liberties++; // top
+	hasLiberty(go, 1, 0) && liberties++; // right
+	hasLiberty(go, 0, 1) && liberties++; // down
+	hasLiberty(go, -1, 0) && liberties++; // left
+
+	gotoxy(2, 15);
+	cputs("hasLiberty:");
+	gotoxy(2, 16);
+	putch(hasLiberty(go, 0, -1) ? 't' : 'f');
+	putch(hasLiberty(go, 1, 0) ? 't' : 'f');
+	putch(hasLiberty(go, 0, 1) ? 't' : 'f');
+	putch(hasLiberty(go, -1, 0) ? 't' : 'f');
+	getch();
+
+	return liberties;
+}
+
+
+bool hasLiberty(struct go_data go, int x_shift, int y_shift) {
+	int enemy = go.curr_player == 1 ? P2 : P1;
+	int x = go.board_x + x_shift;
+	int y = go.board_y + y_shift;
+
+	return isInBoard(go, x_shift, y_shift) && go.board[x][y] != enemy;
+}
+
 bool isInBoard(struct go_data go, int x_shift, int y_shift) {
-	bool top = go.board_y + y_shift >= 0;
-	bool bottom = go.board_y + y_shift < BOARD_SIZE;
-	bool left = go.board_x + x_shift >= 0;
-	bool right = go.board_x + x_shift < BOARD_SIZE;
+	const bool top = go.board_y + y_shift >= 0;
+	const bool bottom = go.board_y + y_shift < go.board_size;
+	const bool left = go.board_x + x_shift >= 0;
+	const bool right = go.board_x + x_shift < go.board_size;
+
 
 	return top && left && right && bottom;
 }
 
 bool isLegalMove(struct go_data go) {
-	return true;
+	const bool field_not_occupied = go.board[go.board_x][go.board_y] == 0;
+	const bool not_suicide = coutLiberties(go) > 0;
+
+
+	return field_not_occupied && not_suicide;
 }

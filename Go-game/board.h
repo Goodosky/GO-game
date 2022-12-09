@@ -8,12 +8,11 @@
 #define P1 1 // black player
 #define P2 2 // white player
 
-#define BOARD_SIZE 13
+//#define BOARD_SIZE 13
 #define BOARD_DEFAULT_SIZE 13
 #define BOARD_OFFSET_X 50
 #define BOARD_OFFSET_Y 2
 
-#define CURSOR_COLOR YELLOW
 #define BORDER_COLOR YELLOW
 #define EMPTY_FIELD_COLOR LIGHTGRAY
 
@@ -63,6 +62,9 @@ void centerCursor(struct go_data* go);
 
 void putStone(struct go_data* go);
 
+int coutLiberties(struct go_data go);
+
+bool hasLiberty(struct go_data go, int x_shift, int y_shift);
 bool isInBoard(struct go_data go, int x_shift, int y_shift);
 bool isLegalMove(struct go_data go);
 
