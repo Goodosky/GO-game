@@ -3,8 +3,10 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#define P1 1
-#define P2 2
+
+#define NO_STONES 0
+#define P1 1 // black player
+#define P2 2 // white player
 
 #define BOARD_SIZE 13
 #define BOARD_DEFAULT_SIZE 13
@@ -39,21 +41,21 @@
 
 struct go_data {
 	char curr_player = P1; // P1 (black) or P2 (white)
-	char* board; // dynamic array with values: 0 or "b" or "w"
-	bool is_new_board_size = false; // flag to skip memory allocation if it isn't needed
+	int** board; // dynamic array with values: EMPTY_FIELD or P1 or P2
+	bool is_new_board_size = true; // flag to skip memory allocation if it isn't needed
 	int board_size = BOARD_DEFAULT_SIZE;
-	int board_x;
-	int board_y;
+	int board_x = 0;
+	int board_y = 0;
 
 	int cursor_x() { return board_x + BOARD_OFFSET_X; };
 	int cursor_y() { return board_y + BOARD_OFFSET_Y; };
 
 };
 
-void newGame(struct go_data* go);
+void newGame(struct go_data* go); // Create board and place the cursor in the center of the board
 
-void displayBoard(char* board);
-void drawBorder(int border_size);
+void displayBoard(struct go_data go);
+void drawBorder(int board_size);
 
 void displayCursor(struct go_data go);
 void moveCursor(struct go_data* go);

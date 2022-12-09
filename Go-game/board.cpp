@@ -1,29 +1,53 @@
 #include"conio2.h"
 #include "board.h"
+#include<string.h>
+#include <stdlib.h>
 
-void newGame(struct go_data go) {
+void newGame(struct go_data* go) {
+	if (go->is_new_board_size) {
+		// Free memory of old array
+		//for (int i = 0; i < go->board_size ; i++)
+		//	free(go->board[i]);
 
+
+		// Allocate memory for board array
+		go->board = (int**)malloc(go->board_size * sizeof(int*));
+
+		for (int i = 0; i < go->board_size; i++) {
+			go->board[i] = (int*)malloc(go->board_size * sizeof(int));
+			memset(go->board[i], NO_STONES, go->board_size * sizeof(int));
+		}
+
+		go->is_new_board_size = false;
+	}
+
+
+	// Zero out a go->board array
+	for (int i = 0; i < go->board_size; i++) {
+		memset(go->board[i], NO_STONES, go->board_size * sizeof(int));
+	}
+
+	centerCursor(go);
 }
 
 
 void displayBoard(struct go_data go) {
-	drawBorder(int border_size);
+	drawBorder(go.board_size);
 
-	for (int x = 0; x < BOARD_SIZE; x++) {
-		for (int y = 0; y < BOARD_SIZE; y++) {
+	for (int x = 0; x < go.board_size; x++) {
+		for (int y = 0; y < go.board_size; y++) {
 			gotoxy(BOARD_OFFSET_X + x, BOARD_OFFSET_Y + y);
 
 			// Draw empty field...
-			if (board[x][y] == 0) {
+			if (go.board[x][y] == NO_STONES) {
 				textcolor(EMPTY_FIELD_COLOR);
 				putch(EMPTY_FIELD);
 				continue;
 			}
 
 			// ...or stone
-			textcolor(board[x][y] == P1 ? BLACK : WHITE);
+			textcolor(go.board[x][y] == P1 ? BLACK : WHITE);
 			putch(STONE);
-
 		}
 
 		// Return to cursor color
@@ -31,31 +55,31 @@ void displayBoard(struct go_data go) {
 	}
 }
 
-void drawBorder(int border_size) {
+void drawBorder(int board_size) {
 	textcolor(BORDER_COLOR);
 
 	gotoxy(BOARD_OFFSET_X - 1, BOARD_OFFSET_Y - 1);
 	putch(BORDER_TOP_LEFT_CORNER);
 
-	for (int i = 0; i < BOARD_SIZE; i++) {
+	for (int i = 0; i < board_size; i++) {
 		putch(BORDER_TOP);
 	}
 
 	putch(BORDER_TOP_RIGHT_CORNER);
 
-	gotoxy(BOARD_OFFSET_X - 1, BOARD_OFFSET_Y + BOARD_SIZE);
+	gotoxy(BOARD_OFFSET_X - 1, BOARD_OFFSET_Y + board_size);
 	putch(BORDER_BOTTOM_LEFT_CORNER);
 
-	for (int i = 0; i < BOARD_SIZE; i++) {
+	for (int i = 0; i < board_size; i++) {
 		putch(BORDER_BOTTOM);
 	}
 	putch(BORDER_BOTTOM_RIGHT_CORNER);
 
-	for (int i = 0; i < BOARD_SIZE; i++) {
+	for (int i = 0; i < board_size; i++) {
 		gotoxy(BOARD_OFFSET_X - 1, BOARD_OFFSET_Y + i);
 		putch(BORDER_LEFT);
 
-		gotoxy(BOARD_OFFSET_X + BOARD_SIZE, BOARD_OFFSET_Y + i);
+		gotoxy(BOARD_OFFSET_X + board_size, BOARD_OFFSET_Y + i);
 		putch(BORDER_RIGHT);
 	}
 

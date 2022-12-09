@@ -2,10 +2,6 @@
 #include"conio2.h"
 #include "ui.h"
 #include "board.h"
-#include<string.h>
-#include <cstdlib>
-
-
 
 int main() {
 	// Variables
@@ -15,16 +11,12 @@ int main() {
 	struct go_data go;
 	setupConsole();
 
-	// Place the cursor in the center of the board and create board
+	// Create board and place the cursor in the center of the board
 	newGame(&go);
-	centerCursor(&go);
-	go.board = (char*)malloc(go.board_size * go.board_size * sizeof(char));
-
-
 
 	do {
 		displayLegend(go.board_x, go.board_y);
-		displayBoard(go.board);
+		displayBoard(go);
 		displayCursor(go);
 
 		key = getch();
@@ -36,12 +28,7 @@ int main() {
 			putStone(&go);
 			break;
 		case 'n':
-			//newGame();
-
-			centerCursor(&go);
-			// Zero out a go.board array
-			memset(go.board, 0, sizeof(go.board));
-
+			newGame(&go);
 			break;
 		default:
 			break;
