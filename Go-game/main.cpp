@@ -5,7 +5,7 @@
 
 int main() {
 	// Variables
-	int key = 0;
+	int key;
 
 	// Init game
 	struct go_data go;

@@ -5,18 +5,22 @@
 
 void newGame(struct go_data* go) {
 	if (go->is_new_board_size) {
-		// Free memory of old array
+		// Free previous dynamically allocated memory
 		//for (int i = 0; i < go->board_size ; i++)
 		//	free(go->board[i]);
+		//free(go->board);
 
-
-		// Allocate memory for board array
+		// Allocate memory for board (it will be array of pointers) 
 		go->board = (int**)malloc(go->board_size * sizeof(int*));
 
+		// Allocate memory for the "second dimension" of the array
+		// (pointers from the first dimension point to arrays with values)
+		// and fiil up by a NO_STONES representation (empty field)
 		for (int i = 0; i < go->board_size; i++) {
 			go->board[i] = (int*)malloc(go->board_size * sizeof(int));
 			memset(go->board[i], NO_STONES, go->board_size * sizeof(int));
 		}
+
 
 		go->is_new_board_size = false;
 	}

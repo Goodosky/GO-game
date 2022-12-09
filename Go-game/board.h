@@ -8,7 +8,6 @@
 #define P1 1 // black player
 #define P2 2 // white player
 
-//#define BOARD_SIZE 13
 #define BOARD_DEFAULT_SIZE 13
 #define BOARD_OFFSET_X 50
 #define BOARD_OFFSET_Y 2
@@ -40,7 +39,7 @@
 
 struct go_data {
 	char curr_player = P1; // P1 (black) or P2 (white)
-	int** board; // dynamic array with values: EMPTY_FIELD or P1 or P2
+	int** board; // dynamic array with values: NO_STONES or P1 or P2
 	bool is_new_board_size = true; // flag to skip memory allocation if it isn't needed
 	int board_size = BOARD_DEFAULT_SIZE;
 	int board_x = 0;
