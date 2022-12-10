@@ -15,10 +15,10 @@ void newGame(struct go_data* go) {
 
 		// Allocate memory for the "second dimension" of the array
 		// (pointers from the first dimension point to arrays with values)
-		// and fiil up by a NO_STONES representation (empty field)
+		// and fiil up by a EMPTY_FIELD representation
 		for (int i = 0; i < go->board_size; i++) {
 			go->board[i] = (int*)malloc(go->board_size * sizeof(int));
-			memset(go->board[i], NO_STONES, go->board_size * sizeof(int));
+			memset(go->board[i], EMPTY_FIELD, go->board_size * sizeof(int));
 		}
 
 
@@ -28,7 +28,7 @@ void newGame(struct go_data* go) {
 
 	// Zero out a go->board array
 	for (int i = 0; i < go->board_size; i++) {
-		memset(go->board[i], NO_STONES, go->board_size * sizeof(int));
+		memset(go->board[i], EMPTY_FIELD, go->board_size * sizeof(int));
 	}
 
 	centerCursor(go);
@@ -43,15 +43,15 @@ void displayBoard(struct go_data go) {
 			gotoxy(BOARD_OFFSET_X + x, BOARD_OFFSET_Y + y);
 
 			// Draw empty field...
-			if (go.board[x][y] == NO_STONES) {
+			if (go.board[x][y] == EMPTY_FIELD) {
 				textcolor(EMPTY_FIELD_COLOR);
-				putch(EMPTY_FIELD);
+				putch(EMPTY_FIELD_ASCII);
 				continue;
 			}
 
 			// ...or stone
 			textcolor(go.board[x][y] == P1 ? BLACK : WHITE);
-			putch(STONE);
+			putch(STONE_ASCII);
 		}
 	}
 }
@@ -127,34 +127,44 @@ void putStone(struct go_data* go) {
 	// Save info about stone in the go->board array
 	go->board[go->board_x][go->board_y] = go->curr_player;
 
+	// kills stones surrounded by this move (so without liberties)
+	if (coutLiberties(*go, 0, -1) == 0) killStone(go, 0, -1); // top
+	if (coutLiberties(*go, 1, 0) == 0) killStone(go, 1, 0); // right
+	if (coutLiberties(*go, 0, 1) == 0) killStone(go, 0, 1); // down
+	if (coutLiberties(*go, -1, 0) == 0) killStone(go, -1, 0); // left
+
 	// Change current player
-	go->curr_player = go->curr_player == P2 ? P1 : P2;
+	go->curr_player = go->curr_player == P1 ? P2 : P1;
 };
 
+void killStone(struct go_data* go, int x_shift, int y_shift) {
+	int* stone_to_kill = &(go->board[go->board_x + x_shift][go->board_y + y_shift]);
 
-int coutLiberties(struct go_data go) {
+	// Check if this stone is a enemy
+	if (*stone_to_kill != go->enemy()) return;
+
+	// Kill stone
+	go->board[go->board_x + x_shift][go->board_y + y_shift] = EMPTY_FIELD;
+
+	// Add points for a killer
+	go->points[go->curr_player == P1 ? 0 : 1] += 1;
+};
+
+int coutLiberties(struct go_data go, int x_shift = 0, int y_shift = 0) {
 	int liberties = 0;
+	int enemy = go.enemy(go.board_x + x_shift, go.board_y + y_shift);
 
-	hasLiberty(go, 0, -1) && liberties++; // top
-	hasLiberty(go, 1, 0) && liberties++; // right
-	hasLiberty(go, 0, 1) && liberties++; // down
-	hasLiberty(go, -1, 0) && liberties++; // left
-
-	gotoxy(2, 15);
-	cputs("hasLiberty:");
-	gotoxy(2, 16);
-	putch(hasLiberty(go, 0, -1) ? 't' : 'f');
-	putch(hasLiberty(go, 1, 0) ? 't' : 'f');
-	putch(hasLiberty(go, 0, 1) ? 't' : 'f');
-	putch(hasLiberty(go, -1, 0) ? 't' : 'f');
-	getch();
+	hasLiberty(go, 0 + x_shift, -1 + y_shift, enemy) && liberties++; // top
+	hasLiberty(go, 1 + x_shift, 0 + y_shift, enemy) && liberties++; // right
+	hasLiberty(go, 0 + x_shift, 1 + y_shift, enemy) && liberties++; // down
+	hasLiberty(go, -1 + x_shift, 0 + y_shift, enemy) && liberties++; // left
 
 	return liberties;
 }
 
 
-bool hasLiberty(struct go_data go, int x_shift, int y_shift) {
-	int enemy = go.curr_player == 1 ? P2 : P1;
+bool hasLiberty(struct go_data go, int x_shift, int y_shift, int enemy = false) {
+	if (!enemy) int enemy = go.enemy();
 	int x = go.board_x + x_shift;
 	int y = go.board_y + y_shift;
 
@@ -167,14 +177,12 @@ bool isInBoard(struct go_data go, int x_shift, int y_shift) {
 	const bool left = go.board_x + x_shift >= 0;
 	const bool right = go.board_x + x_shift < go.board_size;
 
-
 	return top && left && right && bottom;
 }
 
 bool isLegalMove(struct go_data go) {
 	const bool field_not_occupied = go.board[go.board_x][go.board_y] == 0;
 	const bool not_suicide = coutLiberties(go) > 0;
-
 
 	return field_not_occupied && not_suicide;
 }

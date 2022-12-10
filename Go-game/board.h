@@ -4,7 +4,7 @@
 #define BOARD_H
 
 
-#define NO_STONES 0
+#define EMPTY_FIELD 0
 #define P1 1 // black player
 #define P2 2 // white player
 
@@ -16,8 +16,8 @@
 #define EMPTY_FIELD_COLOR LIGHTGRAY
 
 // ASCII codes
-#define EMPTY_FIELD 126
-#define STONE 254
+#define EMPTY_FIELD_ASCII 126
+#define STONE_ASCII 254
 
 #define BORDER_TOP_LEFT_CORNER 218
 #define BORDER_TOP 196
@@ -39,15 +39,25 @@
 
 struct go_data {
 	char curr_player = P1; // P1 (black) or P2 (white)
-	int** board; // dynamic array with values: NO_STONES or P1 or P2
+	int** board; // dynamic array with values: NO_STONE or P1 or P2
 	bool is_new_board_size = true; // flag to skip memory allocation if it isn't needed
 	int board_size = BOARD_DEFAULT_SIZE;
 	int board_x = 0;
 	int board_y = 0;
+	double points[2] = { 0, 0 }; // { P1 points, P2 points }
 
 	int cursor_x() { return board_x + BOARD_OFFSET_X; };
 	int cursor_y() { return board_y + BOARD_OFFSET_Y; };
-
+	int enemy(int x = false, int y = false) {
+		if (x == false && y == false) {
+			// enemy of cuurent field
+			return curr_player == P1 ? P2 : P1;
+		}
+		else {
+			// enemy of field (x,y)
+			return board[x][y] == P1 ? P2 : P1;
+		}
+	};
 };
 
 void newGame(struct go_data* go); // Create board and place the cursor in the center of the board
@@ -60,10 +70,11 @@ void moveCursor(struct go_data* go);
 void centerCursor(struct go_data* go);
 
 void putStone(struct go_data* go);
+void killStone(struct go_data* go, int x_shift, int y_shift);
 
-int coutLiberties(struct go_data go);
+int coutLiberties(struct go_data go, int x_shift, int y_shift);
 
-bool hasLiberty(struct go_data go, int x_shift, int y_shift);
+bool hasLiberty(struct go_data go, int x_shift, int y_shift, int enemy);
 bool isInBoard(struct go_data go, int x_shift, int y_shift);
 bool isLegalMove(struct go_data go);
 
