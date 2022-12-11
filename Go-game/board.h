@@ -35,6 +35,9 @@
 #define ARROW_LEFT 0x4b
 #define ARROW_RIGHT 0x4d
 #define ARROW_DOWN 0x50
+#define ENTER 0x0D
+#define BACKSPACE '\b'
+
 
 
 struct go_data {
@@ -63,6 +66,7 @@ void displayBoard(struct go_data* go);
 void drawField(struct go_data* go, int x, int y);
 void drawBorder(struct go_data* go, const char direction[], int x, int y);
 void setNewBoardSize(struct go_data* go);
+void setCustomBoardSize(struct go_data* go);
 
 void displayCursor(struct go_data* go);
 void moveCursor(struct go_data* go);

@@ -120,8 +120,82 @@ void drawBorder(struct go_data* go, const char direction[], int x, int y) {
 }
 
 void setNewBoardSize(struct go_data* go) {
-	go->board_size = 22;
+	// Clear screen
+	clrscr();
+
+	// Display options
+	gotoxy(2, 1);
+	cputs("Wybierz nowy rozmiar planszy:");
+
+	gotoxy(2, 2);
+	cputs("a) 9x9");
+
+	gotoxy(2, 3);
+	cputs("b) 13x13");
+
+	gotoxy(2, 4);
+	cputs("c) 19x19");
+
+	gotoxy(2, 5);
+	cputs("d) wlasny rozmiar");
+
+	// Read option
+	switch (getch())
+	{
+	case 'a':
+		go->board_size = 9;
+		break;
+	case 'b':
+		go->board_size = 13;
+		break;
+	case 'c':
+		go->board_size = 19;
+		break;
+	case 'd':
+		setCustomBoardSize(go);
+		break;
+	default:
+		break;
+	}
+
+	// Set new board size
 	go->is_new_board_size = true;
+}
+
+void setCustomBoardSize(struct go_data* go) {
+	// Clear screen
+	clrscr();
+
+	// Display instruction
+	gotoxy(2, 1);
+	cputs("Wpisz rozmiar i kliknij enter:");
+
+	// Move cursor to next row
+	gotoxy(2, 2);
+
+	// Get new board size
+	char new_board_size[10];
+	int character;
+	int i = 0;
+
+	while (true) {
+		character = getche();
+
+		// Submit if ENTER,
+		if (character == ENTER) {
+			go->board_size = atoi(new_board_size);
+			break;
+		};
+
+		// Cancel if BACKSPACE
+		if (character == BACKSPACE) {
+			break;
+		};
+
+		// Add character to array
+		new_board_size[i] = (char)character;
+		i++;
+	};
 }
 
 
@@ -132,9 +206,8 @@ void displayCursor(struct go_data* go) {
 }
 
 void moveCursor(struct go_data* go) {
-	int key = getch(); // get code of a special key
-
-	switch (key) {
+	// get code of a special key
+	switch (getch()) {
 	case ARROW_UP:
 		isInBoard(go, 0, -1) && go->board_y--;
 		break;
