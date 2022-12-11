@@ -30,6 +30,10 @@ void newGame(struct go_data* go) {
 		memset(go->board[i], EMPTY_FIELD, go->board_size * sizeof(int));
 	}
 
+	// Reset data
+	go->handicap_mode = false;
+	go->points[0] = go->points[1] = 0;
+
 	centerCursor(go);
 }
 
@@ -187,8 +191,8 @@ void setCustomBoardSize(struct go_data* go) {
 			break;
 		};
 
-		// Cancel if BACKSPACE
-		if (character == BACKSPACE) {
+		// Cancel if ESCAPE
+		if (character == ESCAPE) {
 			break;
 		};
 
@@ -244,8 +248,14 @@ void putStone(struct go_data* go) {
 	if (coutLiberties(go, 0, 1) == 0) killStone(go, 0, 1); // down
 	if (coutLiberties(go, -1, 0) == 0) killStone(go, -1, 0); // left
 
-	// Change current player
-	go->curr_player = go->curr_player == P1 ? P2 : P1;
+	if (go->handicap_mode) {
+		// if handicap mode: add points to P2
+		go->points[1] += 0.5;
+	}
+	else {
+		// Change current player
+		go->curr_player = go->curr_player == P1 ? P2 : P1;
+	}
 };
 
 void killStone(struct go_data* go, int x_shift, int y_shift) {

@@ -15,7 +15,7 @@ int main() {
 	newGame(&go);
 
 	do {
-		displayLegend(go.board_x, go.board_y);
+		displayLegend(go.board_x, go.board_y, go.points);
 		displayBoard(&go);
 		displayCursor(&go);
 
@@ -29,6 +29,9 @@ int main() {
 			break;
 		case 'n':
 			newGame(&go);
+			break;
+		case 'h':
+			go.handicap_mode = !go.handicap_mode;
 			break;
 		case 'c':
 			setNewBoardSize(&go);

@@ -36,8 +36,7 @@
 #define ARROW_RIGHT 0x4d
 #define ARROW_DOWN 0x50
 #define ENTER 0x0D
-#define BACKSPACE '\b'
-
+#define ESCAPE 0x1B
 
 
 struct go_data {
@@ -50,6 +49,7 @@ struct go_data {
 	int board_y;
 	int x_shift;
 	int y_shift;
+	bool handicap_mode = false;
 
 	struct text_info consoleInfo;
 	int consoleWidth() { return (int)(consoleInfo.screenwidth); };

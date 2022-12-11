@@ -14,7 +14,7 @@ void setupConsole() {
 	textbackground(CONSOLE_BG_COLOR);
 }
 
-void displayLegend(int x, int y) {
+void displayLegend(int x, int y, double points[2]) {
 	clrscr(); // Clean console
 	textcolor(LEGEND_TXT_COLOR);
 
@@ -28,10 +28,12 @@ void displayLegend(int x, int y) {
 
 	// Display current coordinates position
 	gotoxy(LEGEND_START_X, LEGEND_START_Y + number_of_legend_elements + 2);
-	cputs("Coordinates:");
-
-	gotoxy(LEGEND_START_X, LEGEND_START_Y + number_of_legend_elements + 3);
 	char txt[30];
-	sprintf(txt, "x: %d, y: %d", x + 1, y + 1);
+	sprintf(txt, "Coordinates: x: %d, y: %d", x + 1, y + 1);
+	cputs(txt);
+
+	// Display points
+	gotoxy(LEGEND_START_X, LEGEND_START_Y + number_of_legend_elements + 3);
+	sprintf(txt, "Points: %0.1f vs %0.1f", points[0], points[1]);
 	cputs(txt);
 };
