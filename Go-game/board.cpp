@@ -5,7 +5,7 @@
 #include<stdio.h>
 
 void newGame(struct go_data* go, bool first_call) {
-	if (go->previous_board_size || first_call) {
+	if (go->previous_board_size != go->board_size || first_call) {
 		// Free previous dynamically allocated memory
 		if (!first_call) {
 			for (int i = 0; i < go->previous_board_size; i++)
@@ -132,7 +132,7 @@ void setNewBoardSize(struct go_data* go) {
 
 	// Display options
 	gotoxy(2, 1);
-	cputs("Wybierz nowy rozmiar planszy:");
+	cputs("Select a new board size:");
 
 	gotoxy(2, 2);
 	cputs("a) 9x9");
@@ -144,7 +144,7 @@ void setNewBoardSize(struct go_data* go) {
 	cputs("c) 19x19");
 
 	gotoxy(2, 5);
-	cputs("d) wlasny rozmiar");
+	cputs("d) custom size");
 
 	// Set new board size
 	go->previous_board_size = go->board_size;
@@ -175,7 +175,7 @@ void setCustomBoardSize(struct go_data* go) {
 
 	// Display instruction
 	gotoxy(2, 1);
-	cputs("Wpisz rozmiar i kliknij enter:");
+	cputs("Enter the size and click enter:");
 
 	// Move cursor to next row
 	gotoxy(2, 2);
