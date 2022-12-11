@@ -61,7 +61,7 @@ void newGame(struct go_data* go); // Create board and place the cursor in the ce
 
 void displayBoard(struct go_data* go);
 void drawField(struct go_data* go, int x, int y);
-void drawBorder(struct go_data* go, char direction[], int x, int y);
+void drawBorder(struct go_data* go, const char direction[], int x, int y);
 void setNewBoardSize(struct go_data* go);
 
 void displayCursor(struct go_data* go);
@@ -72,9 +72,7 @@ void putStone(struct go_data* go);
 void killStone(struct go_data* go, int x_shift, int y_shift);
 
 int coutLiberties(struct go_data* go, int x_shift, int y_shift);
-
 int getEnemyByXY(struct go_data* go, int x, int y);
-
 bool hasLiberty(struct go_data* go, int x_shift, int y_shift, int enemy);
 bool isInBoard(struct go_data* go, int x_shift, int y_shift);
 bool isLegalMove(struct go_data* go);

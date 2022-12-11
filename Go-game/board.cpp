@@ -105,8 +105,7 @@ void drawField(struct go_data* go, int x, int y) {
 	}
 }
 
-
-void drawBorder(struct go_data* go, char direction[], int x, int y) {
+void drawBorder(struct go_data* go, const char direction[], int x, int y) {
 	textcolor(BORDER_COLOR);
 	gotoxy(x + BOARD_OFFSET_X, y + BOARD_OFFSET_Y);
 
@@ -124,7 +123,6 @@ void setNewBoardSize(struct go_data* go) {
 	go->board_size = 22;
 	go->is_new_board_size = true;
 }
-
 
 
 void displayCursor(struct go_data* go) {
@@ -190,6 +188,7 @@ void killStone(struct go_data* go, int x_shift, int y_shift) {
 	go->points[go->curr_player == P1 ? 0 : 1] += 1;
 };
 
+
 int coutLiberties(struct go_data* go, int x_shift = 0, int y_shift = 0) {
 	int liberties = 0;
 	int enemy = getEnemyByXY(go, go->board_x + x_shift, go->board_y + y_shift);
@@ -209,7 +208,6 @@ int getEnemyByXY(struct go_data* go, int x, int y) {
 	// Return enemy
 	return go->board[x][y] == P1 ? P2 : P1;
 };
-
 
 bool hasLiberty(struct go_data* go, int x_shift, int y_shift, int enemy = false) {
 	if (!enemy) int enemy = go->enemy();

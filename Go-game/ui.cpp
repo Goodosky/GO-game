@@ -14,7 +14,6 @@ void setupConsole() {
 	textbackground(CONSOLE_BG_COLOR);
 }
 
-
 void displayLegend(int x, int y) {
 	clrscr(); // Clean console
 	textcolor(LEGEND_TXT_COLOR);
