@@ -358,13 +358,14 @@ void getFilename(char* filename) {
 }
 
 void saveToFile(struct go_data* go) {
+	// Open a file
 	char filename[100];
 	getFilename(filename);
-
 	if (!filename) return;
-
 	FILE* f = fopen(filename, "w");
 
+
+	// Save data
 	fwrite(&go->board_size, sizeof(int), 1, f);
 	fwrite(&go->curr_player, sizeof(char), 1, f);
 	fwrite(go->points, sizeof(double[2]), 1, f);
@@ -375,25 +376,25 @@ void saveToFile(struct go_data* go) {
 		fwrite(go->board[i], sizeof(int), go->board_size, f);
 	}
 
+	// Close a file
 	fclose(f);
 };
 
 void loadFromFile(struct go_data* go) {
-	go->previous_board_size = go->board_size;
-
+	// Open file
 	char filename[100];
 	getFilename(filename);
-
 	if (!filename) return;
-
 	FILE* f = fopen(filename, "r");
 
+	// First check the board size
+	go->previous_board_size = go->board_size;
 	fread(&go->board_size, sizeof(int), 1, f);
 
-
 	// If board_size has changed then we need to reallocate the memory
-	reallocateMemory(go);
+	if (go->previous_board_size != go->board_size) 	reallocateMemory(go);
 
+	// Read the rest of the data
 	fread(&go->curr_player, sizeof(char), 1, f);
 	fread(go->points, sizeof(double[2]), 1, f);
 	fread(&go->board_x, sizeof(int), 1, f);
@@ -403,5 +404,6 @@ void loadFromFile(struct go_data* go) {
 		fread(go->board[i], sizeof(int), go->board_size, f);
 	}
 
+	// Close a file
 	fclose(f);
 };
