@@ -77,6 +77,7 @@ void killStone(struct go_data* go, int x_shift, int y_shift);
 
 int coutLiberties(struct go_data* go, int x_shift, int y_shift);
 int getEnemyByXY(struct go_data* go, int x, int y);
+void reallocateMemory(struct go_data* go, bool first_call = false);
 
 bool hasLiberty(struct go_data* go, int x_shift, int y_shift, int enemy);
 bool isInBoard(struct go_data* go, int x_shift, int y_shift);

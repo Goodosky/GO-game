@@ -6,23 +6,7 @@
 
 void newGame(struct go_data* go, bool first_call) {
 	if (go->previous_board_size != go->board_size || first_call) {
-		// Free previous dynamically allocated memory
-		if (!first_call) {
-			for (int i = 0; i < go->previous_board_size; i++)
-				free(go->board[i]);
-			free(go->board);
-		}
-
-		// Allocate memory for board (it will be array of pointers) 
-		go->board = (int**)malloc(go->board_size * sizeof(int*));
-
-		// Allocate memory for the "second dimension" of the array
-		// (pointers from the first dimension point to arrays with values)
-		// and fiil up by a EMPTY_FIELD representation
-		for (int i = 0; i < go->board_size; i++) {
-			go->board[i] = (int*)malloc(go->board_size * sizeof(int));
-			memset(go->board[i], EMPTY_FIELD, go->board_size * sizeof(int));
-		}
+		reallocateMemory(go, first_call);
 	}
 
 	// Zero out a go->board array
@@ -292,6 +276,26 @@ int getEnemyByXY(struct go_data* go, int x, int y) {
 	return go->board[x][y] == P1 ? P2 : P1;
 };
 
+void reallocateMemory(struct go_data* go, bool first_call) {
+	// Free previous dynamically allocated memory
+	if (!first_call) {
+		for (int i = 0; i < go->previous_board_size; i++)
+			free(go->board[i]);
+		free(go->board);
+	}
+
+	// Allocate memory for board (it will be array of pointers) 
+	go->board = (int**)malloc(go->board_size * sizeof(int*));
+
+	// Allocate memory for the "second dimension" of the array
+	// (pointers from the first dimension point to arrays with values)
+	// and fiil up by a EMPTY_FIELD representation
+	for (int i = 0; i < go->board_size; i++) {
+		go->board[i] = (int*)malloc(go->board_size * sizeof(int));
+		memset(go->board[i], EMPTY_FIELD, go->board_size * sizeof(int));
+	}
+}
+
 
 bool hasLiberty(struct go_data* go, int x_shift, int y_shift, int enemy = false) {
 	if (!enemy) int enemy = go->enemy();
@@ -375,6 +379,8 @@ void saveToFile(struct go_data* go) {
 };
 
 void loadFromFile(struct go_data* go) {
+	go->previous_board_size = go->board_size;
+
 	char filename[100];
 	getFilename(filename);
 
@@ -383,6 +389,11 @@ void loadFromFile(struct go_data* go) {
 	FILE* f = fopen(filename, "r");
 
 	fread(&go->board_size, sizeof(int), 1, f);
+
+
+	// If board_size has changed then we need to reallocate the memory
+	reallocateMemory(go);
+
 	fread(&go->curr_player, sizeof(char), 1, f);
 	fread(go->points, sizeof(double[2]), 1, f);
 	fread(&go->board_x, sizeof(int), 1, f);
@@ -394,4 +405,3 @@ void loadFromFile(struct go_data* go) {
 
 	fclose(f);
 };
-

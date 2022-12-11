@@ -13,7 +13,7 @@
 #define MAX_LEGEND_ELEMENT_LENGTH 100
 
 const char legendElements[][MAX_LEGEND_ELEMENT_LENGTH] = {
-	"Oskar Radziewicz 193676 (h,i,k)",
+	"Oskar Radziewicz 193676 (f,h,i,k)",
 	"",
 	"Features:",
 	"arrows = moving",
@@ -21,6 +21,8 @@ const char legendElements[][MAX_LEGEND_ELEMENT_LENGTH] = {
 	"n	= new game",
 	"c	= change board size",
 	"h	= toggle handicap mode",
+	"l	= load from a file",
+	"s	= save to a file",
 	"q	= exit",
 };
 
