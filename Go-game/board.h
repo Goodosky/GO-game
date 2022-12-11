@@ -43,7 +43,7 @@ struct go_data {
 	char curr_player = P1; // P1 (black) or P2 (white)
 	double points[2] = { 0, 0 }; // { P1 points, P2 points }
 	int** board; // dynamic array with values: NO_STONE or P1 or P2
-	bool is_new_board_size = true; // flag to skip memory allocation if it isn't needed
+	int previous_board_size = 0; // flag to skip memory allocation if it isn't needed
 	int board_size = BOARD_DEFAULT_SIZE;
 	int board_x;
 	int board_y;
@@ -60,7 +60,7 @@ struct go_data {
 	int enemy() { return curr_player == P1 ? P2 : P1; }
 };
 
-void newGame(struct go_data* go); // Create board and place the cursor in the center of the board
+void newGame(struct go_data* go, bool first_call = false); // Create board and place the cursor in the center of the board
 
 void displayBoard(struct go_data* go);
 void drawField(struct go_data* go, int x, int y);

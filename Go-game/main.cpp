@@ -12,7 +12,7 @@ int main() {
 	setupConsole();
 
 	// Create board and place the cursor in the center of the board
-	newGame(&go);
+	newGame(&go, true);
 
 	do {
 		displayLegend(go.board_x, go.board_y, go.points);

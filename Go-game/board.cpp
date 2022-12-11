@@ -4,12 +4,14 @@
 #include <stdlib.h>
 #include<stdio.h>
 
-void newGame(struct go_data* go) {
-	if (go->is_new_board_size) {
+void newGame(struct go_data* go, bool first_call) {
+	if (go->previous_board_size || first_call) {
 		// Free previous dynamically allocated memory
-		//for (int i = 0; i < go->board_size ; i++)
-		//	free(go->board[i]);
-		//free(go->board);
+		if (!first_call) {
+			for (int i = 0; i < go->previous_board_size; i++)
+				free(go->board[i]);
+			free(go->board);
+		}
 
 		// Allocate memory for board (it will be array of pointers) 
 		go->board = (int**)malloc(go->board_size * sizeof(int*));
@@ -22,7 +24,8 @@ void newGame(struct go_data* go) {
 			memset(go->board[i], EMPTY_FIELD, go->board_size * sizeof(int));
 		}
 
-		go->is_new_board_size = false;
+		// 0 = There has been no board change since the last call
+		go->previous_board_size = 0;
 	}
 
 	// Zero out a go->board array
@@ -143,6 +146,9 @@ void setNewBoardSize(struct go_data* go) {
 	gotoxy(2, 5);
 	cputs("d) wlasny rozmiar");
 
+	// Set new board size
+	go->previous_board_size = go->board_size;
+
 	// Read option
 	switch (getch())
 	{
@@ -161,9 +167,6 @@ void setNewBoardSize(struct go_data* go) {
 	default:
 		break;
 	}
-
-	// Set new board size
-	go->is_new_board_size = true;
 }
 
 void setCustomBoardSize(struct go_data* go) {
