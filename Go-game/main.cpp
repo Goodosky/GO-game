@@ -33,6 +33,12 @@ int main() {
 		case 'h':
 			go.handicap_mode = !go.handicap_mode;
 			break;
+		case 's':
+			saveToFile(&go);
+			break;
+		case 'l':
+			loadFromFile(&go);
+			break;
 		case 'c':
 			setNewBoardSize(&go);
 			newGame(&go);

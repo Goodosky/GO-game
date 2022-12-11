@@ -1,8 +1,8 @@
-#include"conio2.h"
-#include "board.h"
 #include<string.h>
 #include <stdlib.h>
 #include<stdio.h>
+#include"conio2.h"
+#include "board.h"
 
 void newGame(struct go_data* go, bool first_call) {
 	if (go->previous_board_size != go->board_size || first_call) {
@@ -23,9 +23,6 @@ void newGame(struct go_data* go, bool first_call) {
 			go->board[i] = (int*)malloc(go->board_size * sizeof(int));
 			memset(go->board[i], EMPTY_FIELD, go->board_size * sizeof(int));
 		}
-
-		// 0 = There has been no board change since the last call
-		go->previous_board_size = 0;
 	}
 
 	// Zero out a go->board array
@@ -295,6 +292,7 @@ int getEnemyByXY(struct go_data* go, int x, int y) {
 	return go->board[x][y] == P1 ? P2 : P1;
 };
 
+
 bool hasLiberty(struct go_data* go, int x_shift, int y_shift, int enemy = false) {
 	if (!enemy) int enemy = go->enemy();
 	int x = go->board_x + x_shift;
@@ -318,3 +316,82 @@ bool isLegalMove(struct go_data* go) {
 
 	return field_not_occupied && not_suicide;
 }
+
+
+void getFilename(char* filename) {
+	// Clear screen
+	clrscr();
+
+	// Display instruction
+	gotoxy(2, 1);
+	cputs("Enter the filename and click enter:");
+
+	// Move cursor to next row
+	gotoxy(2, 2);
+
+	// Get fileneme
+	int character;
+	int i = 0;
+
+	while (true) {
+		character = getche();
+
+		// Submit if ENTER,
+		if (character == ENTER) {
+			filename[i] = '\0';
+			break;
+		};
+
+		// Cancel if ESCAPE
+		if (character == ESCAPE) {
+			break;
+		};
+
+		// Add character to array
+		filename[i] = (char)character;
+		i++;
+	};
+}
+
+void saveToFile(struct go_data* go) {
+	char filename[100];
+	getFilename(filename);
+
+	if (!filename) return;
+
+	FILE* f = fopen(filename, "w");
+
+	fwrite(&go->board_size, sizeof(int), 1, f);
+	fwrite(&go->curr_player, sizeof(char), 1, f);
+	fwrite(go->points, sizeof(double[2]), 1, f);
+	fwrite(&go->board_x, sizeof(int), 1, f);
+	fwrite(&go->board_y, sizeof(int), 1, f);
+
+	for (int i = 0; i < go->board_size; i++) {
+		fwrite(go->board[i], sizeof(int), go->board_size, f);
+	}
+
+	fclose(f);
+};
+
+void loadFromFile(struct go_data* go) {
+	char filename[100];
+	getFilename(filename);
+
+	if (!filename) return;
+
+	FILE* f = fopen(filename, "r");
+
+	fread(&go->board_size, sizeof(int), 1, f);
+	fread(&go->curr_player, sizeof(char), 1, f);
+	fread(go->points, sizeof(double[2]), 1, f);
+	fread(&go->board_x, sizeof(int), 1, f);
+	fread(&go->board_y, sizeof(int), 1, f);
+
+	for (int i = 0; i < go->board_size; i++) {
+		fread(go->board[i], sizeof(int), go->board_size, f);
+	}
+
+	fclose(f);
+};
+

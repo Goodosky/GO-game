@@ -77,8 +77,13 @@ void killStone(struct go_data* go, int x_shift, int y_shift);
 
 int coutLiberties(struct go_data* go, int x_shift, int y_shift);
 int getEnemyByXY(struct go_data* go, int x, int y);
+
 bool hasLiberty(struct go_data* go, int x_shift, int y_shift, int enemy);
 bool isInBoard(struct go_data* go, int x_shift, int y_shift);
 bool isLegalMove(struct go_data* go);
+
+void getFilename(char* filename);
+void saveToFile(struct go_data* go);
+void loadFromFile(struct go_data* go);
 
 #endif
