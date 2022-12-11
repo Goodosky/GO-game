@@ -36,5 +36,3 @@ void displayLegend(int x, int y) {
 	sprintf(txt, "x: %d, y: %d", x + 1, y + 1);
 	cputs(txt);
 };
-
-

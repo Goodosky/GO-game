@@ -16,8 +16,8 @@ int main() {
 
 	do {
 		displayLegend(go.board_x, go.board_y);
-		displayBoard(go);
-		displayCursor(go);
+		displayBoard(&go);
+		displayCursor(&go);
 
 		key = getch();
 		switch (key) {
@@ -28,6 +28,10 @@ int main() {
 			putStone(&go);
 			break;
 		case 'n':
+			newGame(&go);
+			break;
+		case 'c':
+			setNewBoardSize(&go);
 			newGame(&go);
 			break;
 		default:
